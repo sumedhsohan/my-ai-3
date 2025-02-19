@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mock Interview</title>
+</head>
+<body>
+    <h2>AI Mock Interview</h2>
+    
+    <label>Enter Your User ID:</label>
+    <input type="text" id="userId"><br>
+
+    <label>Enter Job Role:</label>
+    <input type="text" id="jobRole"><br>
+    <button onclick="startInterview()">Start Interview</button>
+
+    <p id="question"></p>
+
+    <textarea id="answer" placeholder="Enter your answer"></textarea><br>
+    <button onclick="sendAnswer()">Submit Answer</button>
+
+    <p id="feedback"></p>
+
+    <script>
+        const BASE_URL = "http://127.0.0.1:5000";  // Change this when deploying
+
+        async function startInterview() {
+            const userId = document.getElementById("userId").value;
+            const jobRole = document.getElementById("jobRole").value;
+
+            const response = await fetch(`${BASE_URL}/start_interview`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId, job_role: jobRole })
+            });
+
+            const data = await response.json();
+            document.getElementById("question").innerText = "Q: " + data.question;
+        }
+
+        async function sendAnswer() {
+            const userId = document.getElementById("userId").value;
+            const answer = document.getElementById("answer").value;
+
+            const response = await fetch(`${BASE_URL}/answer_question`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: userId, answer: answer })
+            });
+
+            const data = await response.json();
+            document.getElementById("feedback").innerText = data.response;
+        }
+    </script>
+</body>
+</html>
